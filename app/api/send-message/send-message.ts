@@ -1,5 +1,5 @@
 import { TELEGRAM_BOT_TOKEN } from "@/constants";
-import type { ScheduledMessage, TelegramMessage } from "../types";
+import type { ScheduledMessage, TelegramMessage } from "@/types";
 
 export const sendMessage = async ({
   chatId,

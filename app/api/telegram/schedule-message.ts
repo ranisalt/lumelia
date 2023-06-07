@@ -3,7 +3,7 @@ import {
   SERVERLESSQ_QUEUE_ID,
   VERCEL_URL,
 } from "@/constants";
-import type { ScheduledMessage } from "../types";
+import type { ScheduledMessage } from "@/types";
 
 const target = `https://${VERCEL_URL}/api/send-message`;
 
@@ -16,7 +16,7 @@ export const scheduleMessage = async (content: ScheduledMessage) => {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      "x-api-key": SERVERLESSQ_API_TOKEN!,
+      "x-api-key": SERVERLESSQ_API_TOKEN,
     },
     body: JSON.stringify(content),
   });

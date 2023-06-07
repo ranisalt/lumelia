@@ -1,4 +1,4 @@
-import type { Loot, Transaction } from "../types";
+import type { Loot, Transaction } from "@/types";
 
 /**
  * Split loot between players fairly and return a list of transactions.

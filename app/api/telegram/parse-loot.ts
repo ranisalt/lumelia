@@ -1,5 +1,5 @@
+import type { Loot } from "@/types";
 import { chunk, map } from "histar";
-import type { Loot } from "../types";
 
 const parseNumberLine = (line: string) => {
   const [_, value] = line.split(":");

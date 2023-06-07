@@ -1,6 +1,8 @@
+import { TELEGRAM_BOT_API_SECRET_TOKEN } from "@/constants";
+import type { TelegramMessage, Transaction } from "@/types";
 import { groupBy } from "histar";
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import type { TelegramMessage, Transaction } from "../types";
 import { parseLoot } from "./parse-loot";
 import { scheduleMessage } from "./schedule-message";
 import { splitLoot } from "./split-loot";
@@ -26,6 +28,12 @@ const buildMessage = (transactions: Transaction[]) => {
 };
 
 export const POST = async (req: Request) => {
+  const headersList = headers();
+  const secretToken = headersList.get("x-telegram-bot-api-secret-token");
+  if (secretToken !== TELEGRAM_BOT_API_SECRET_TOKEN) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   const { message }: TelegramRequestBody = await req.json();
   const {
     message_id,
