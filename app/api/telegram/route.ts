@@ -55,7 +55,13 @@ export const POST = async (req: Request) => {
     return NextResponse.json({ success: false });
   }
 
-  const loot = parseLoot(text.substring(length + 1, text.length));
+  let loot;
+  try {
+    loot = parseLoot(text.substring(length + 1, text.length));
+  } catch {
+    return NextResponse.json({ success: false });
+  }
+
   const transactions = splitLoot(loot);
 
   const reply = buildMessage(transactions);
