@@ -1,7 +1,7 @@
-import { afterAll, afterEach, beforeAll, describe, vi } from "vitest";
-import { scheduleMessage } from "./schedule-message";
 import { server } from "@/mocks/server";
 import { rest } from "msw";
+import { afterAll, afterEach, beforeAll, describe, vi } from "vitest";
+import { scheduleMessage } from "./schedule-message";
 
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
 afterEach(() => server.resetHandlers());

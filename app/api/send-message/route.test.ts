@@ -53,4 +53,26 @@ describe("POST /api/send-message", (it) => {
       replyToMessageId: 456,
     });
   });
+
+  it("should return 400 if the message could not be sent", async ({
+    expect,
+  }) => {
+    vi.mocked(headers).mockReturnValue(
+      new Headers({
+        "x-serverlessq-signature":
+          "b52a8db960cd0a1e2ecee6202d0aabee548ff69148ec8e51f27291888fddb3db",
+      })
+    );
+
+    vi.mocked(sendMessage).mockRejectedValue(
+      new Error("Bad Request: message text is empty")
+    );
+
+    const response = await POST(payload);
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({
+      error: "Message could not be sent",
+    });
+  });
 });

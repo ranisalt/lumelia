@@ -1,5 +1,9 @@
 import { TELEGRAM_BOT_TOKEN } from "@/constants";
-import type { ScheduledMessage, TelegramMessage } from "@/types";
+import type {
+  ScheduledMessage,
+  TelegramMessage,
+  TelegramResponse,
+} from "@/types";
 
 export const sendMessage = async ({
   chatId,
@@ -22,5 +26,7 @@ export const sendMessage = async ({
     }),
   });
 
-  return response.json();
+  const body: TelegramResponse<TelegramMessage> = await response.json();
+  if (body.ok) return body.result;
+  throw new Error(body.description);
 };

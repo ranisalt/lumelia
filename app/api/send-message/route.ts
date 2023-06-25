@@ -18,7 +18,13 @@ export const POST = async (req: Request) => {
 
   const message: ScheduledMessage = await req.json();
 
-  const response = await sendMessage(message);
-
-  return NextResponse.json(response);
+  try {
+    const response = await sendMessage(message);
+    return NextResponse.json(response);
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Message could not be sent" },
+      { status: 400 }
+    );
+  }
 };
