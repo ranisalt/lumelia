@@ -48,7 +48,7 @@ const payload = {
   }),
 } as Request;
 
-describe("POST /api/telegram", (it) => {
+describe.concurrent("POST /api/telegram", (it) => {
   it("should return 401 if the secret token is invalid", async ({ expect }) => {
     vi.mocked(headers).mockReturnValue(new Headers());
 

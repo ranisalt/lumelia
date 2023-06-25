@@ -2,7 +2,7 @@ import { describe } from "vitest";
 import { parseLoot } from "./parse-loot";
 import { splitLoot } from "./split-loot";
 
-describe("splitLoot", (it) => {
+describe.concurrent("splitLoot", (it) => {
   it("should split loot evenly", ({ expect }) => {
     const input = `Session data: From 2023-06-04, 19:10:01 to 2023-06-04, 20:15:31
       Session: 01:05h

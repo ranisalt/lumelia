@@ -11,8 +11,6 @@ vi.mock("@/constants");
 
 describe("scheduleMessage", (it) => {
   it("should make a request to schedule a message", async ({ expect }) => {
-    const cb = vi.fn();
-
     server.use(
       rest.post("https://api.serverlessq.com/", async (req, res, ctx) => {
         expect(req.headers.get("x-api-key")).toEqual(
@@ -27,7 +25,12 @@ describe("scheduleMessage", (it) => {
           "https://lumelia.vercel.app/api/send-message"
         );
 
-        cb(await req.json());
+        expect(await req.json()).toEqual({
+          chatId: 123,
+          text: "Hello world",
+          replyToMessageId: 456,
+        });
+
         return res(ctx.status(200), ctx.json({ success: true }));
       })
     );
@@ -39,12 +42,5 @@ describe("scheduleMessage", (it) => {
     });
 
     expect(response).toEqual({ success: true });
-
-    expect(cb).toHaveBeenCalledTimes(1);
-    expect(cb).toHaveBeenCalledWith({
-      chatId: 123,
-      text: "Hello world",
-      replyToMessageId: 456,
-    });
   });
 });

@@ -1,7 +1,7 @@
 import { describe } from "vitest";
 import { parseLoot } from "./parse-loot";
 
-describe("parseLoot", (it) => {
+describe.concurrent("parseLoot", (it) => {
   it("should parse loot", ({ expect }) => {
     expect(
       parseLoot(`Session data: From 2023-05-30, 19:45:04 to 2023-05-30, 20:52:15

@@ -11,12 +11,17 @@ vi.mock("@/constants");
 
 describe("send-message", (it) => {
   it("should make a request to send a message", async ({ expect }) => {
-    const cb = vi.fn();
     server.use(
       rest.post(
         "https://api.telegram.org/bot110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw/sendMessage",
         async (req, res, ctx) => {
-          cb(await req.json());
+          expect(await req.json()).toEqual({
+            chat_id: 123,
+            text: "Hello world",
+            reply_to_message_id: 456,
+            parse_mode: "MarkdownV2",
+          });
+
           return res(
             ctx.status(200),
             ctx.json({
@@ -42,13 +47,6 @@ describe("send-message", (it) => {
       message_id: 123,
       date: 1664236800,
       chat: { id: 123, type: "group" },
-    });
-    expect(cb).toHaveBeenCalledTimes(1);
-    expect(cb).toHaveBeenCalledWith({
-      chat_id: 123,
-      text: "Hello world",
-      reply_to_message_id: 456,
-      parse_mode: "MarkdownV2",
     });
   });
 

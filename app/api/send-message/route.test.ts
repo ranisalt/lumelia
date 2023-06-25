@@ -15,7 +15,7 @@ const payload = {
   }),
 } as Request;
 
-describe("POST /api/send-message", (it) => {
+describe.concurrent("POST /api/send-message", (it) => {
   it("should return 401 if the secret token is invalid", async ({ expect }) => {
     vi.mocked(headers).mockReturnValue(new Headers());
 
