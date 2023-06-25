@@ -11,7 +11,7 @@ export const sendMessage = async ({
     "https://api.telegram.org"
   );
 
-  const response = await fetch(url, {
+  const response = await fetch(url.toString(), {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({

@@ -12,7 +12,7 @@ export const scheduleMessage = async (content: ScheduledMessage) => {
   url.searchParams.set("id", SERVERLESSQ_QUEUE_ID);
   url.searchParams.set("target", target);
 
-  const response = await fetch(url, {
+  const response = await fetch(url.toString(), {
     method: "POST",
     headers: {
       "content-type": "application/json",

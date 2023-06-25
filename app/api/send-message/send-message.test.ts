@@ -1,15 +1,26 @@
-import { describe, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, vi } from "vitest";
+import { rest } from "msw";
 import { sendMessage } from "./send-message";
+import { server } from "@/mocks/server";
+
+beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
 
 vi.mock("@/constants");
 
 describe("send-message", (it) => {
   it("should make a request to send a message", async ({ expect }) => {
-    const spyFetch = vi.spyOn(global, "fetch");
-
-    spyFetch.mockResolvedValue({
-      json: async () => ({ success: true }),
-    } as Response);
+    const cb = vi.fn();
+    server.use(
+      rest.post(
+        "https://api.telegram.org/bot110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw/sendMessage",
+        async (req, res, ctx) => {
+          cb(await req.json());
+          return res(ctx.status(200), ctx.json({ success: true }));
+        }
+      )
+    );
 
     const response = await sendMessage({
       chatId: 123,
@@ -17,27 +28,13 @@ describe("send-message", (it) => {
       replyToMessageId: 456,
     });
 
-    const url = new URL(
-      `/bot110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw/sendMessage`,
-      "https://api.telegram.org"
-    );
-
     expect(response).toEqual({ success: true });
-
-    expect(spyFetch).toHaveBeenCalledTimes(1);
-    expect(spyFetch).toHaveBeenCalledWith(url, {
-      body: JSON.stringify({
-        chat_id: 123,
-        text: "Hello world",
-        reply_to_message_id: 456,
-        parse_mode: "MarkdownV2",
-      }),
-      headers: {
-        "content-type": "application/json",
-      },
-      method: "POST",
+    expect(cb).toHaveBeenCalledTimes(1);
+    expect(cb).toHaveBeenCalledWith({
+      chat_id: 123,
+      text: "Hello world",
+      reply_to_message_id: 456,
+      parse_mode: "MarkdownV2",
     });
-
-    spyFetch.mockRestore();
   });
 });
