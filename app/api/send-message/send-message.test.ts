@@ -1,8 +1,11 @@
+import { describe, vi } from "vitest";
 import { sendMessage } from "./send-message";
 
-describe("send-message", () => {
-  it("should make a request to send a message", async () => {
-    const spyFetch = jest.spyOn(global, "fetch");
+vi.mock("@/constants");
+
+describe("send-message", (it) => {
+  it("should make a request to send a message", async ({ expect }) => {
+    const spyFetch = vi.spyOn(global, "fetch");
 
     spyFetch.mockResolvedValue({
       json: async () => ({ success: true }),

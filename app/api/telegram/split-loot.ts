@@ -1,4 +1,5 @@
-import type { Loot, Transaction } from "@/types";
+import type { Transaction } from "@/types";
+import type { parseLoot } from "./parse-loot";
 
 /**
  * Split loot between players fairly and return a list of transactions.
@@ -8,7 +9,10 @@ import type { Loot, Transaction } from "@/types";
  * positive balance first, then the balance will be recalculated and the
  * process will repeat until all balances are neutral.
  */
-export const splitLoot = ({ balance, players }: Loot) => {
+export const splitLoot = ({
+  balance,
+  players,
+}: ReturnType<typeof parseLoot>) => {
   const balancePerPlayer = Math.floor(balance / players.length);
   const state = players.map(({ name, balance }) => ({
     name,

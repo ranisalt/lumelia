@@ -1,9 +1,18 @@
+import { db } from "@/database";
 import { headers } from "next/headers";
+import { afterAll, describe, vi } from "vitest";
 import { POST } from "./route";
 import { scheduleMessage } from "./schedule-message";
 
-jest.mock("next/headers");
-jest.mock("./schedule-message");
+vi.mock("@/constants");
+vi.mock("@/database");
+vi.mock("next/headers");
+vi.mock("./schedule-message");
+
+afterAll(async () => {
+  await db.connection.dropDatabase();
+  await db.connection.close();
+});
 
 const payload = {
   json: async () => ({
@@ -39,17 +48,17 @@ const payload = {
   }),
 } as Request;
 
-describe("POST /api/telegram", () => {
-  it("should return 401 if the secret token is invalid", async () => {
-    (headers as jest.Mock).mockReturnValue(new Headers());
+describe("POST /api/telegram", (it) => {
+  it("should return 401 if the secret token is invalid", async ({ expect }) => {
+    vi.mocked(headers).mockReturnValue(new Headers());
 
     const response = await POST(payload);
 
     expect(response.status).toEqual(401);
   });
 
-  it("should schedule a message", async () => {
-    (headers as jest.Mock).mockReturnValue(
+  it("should schedule a message", async ({ expect }) => {
+    vi.mocked(headers).mockReturnValue(
       new Headers({
         "x-telegram-bot-api-secret-token":
           "-l6Lf4QuzfMR6ZNww30Zi9C0TAm-0XDGMBSoniYDBfQ",
@@ -70,13 +79,15 @@ describe("POST /api/telegram", () => {
     });
   });
 
-  it("should ignore if the input is invalid", async () => {
-    (headers as jest.Mock).mockReturnValue(
+  it("should ignore if the input is invalid", async ({ expect }) => {
+    vi.mocked(headers).mockReturnValue(
       new Headers({
         "x-telegram-bot-api-secret-token":
           "-l6Lf4QuzfMR6ZNww30Zi9C0TAm-0XDGMBSoniYDBfQ",
       })
     );
+
+    vi.mocked(scheduleMessage).mockClear();
 
     const response = await POST({
       json: async () => ({

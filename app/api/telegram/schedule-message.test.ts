@@ -1,8 +1,11 @@
+import { describe, vi } from "vitest";
 import { scheduleMessage } from "./schedule-message";
 
-describe("scheduleMessage", () => {
-  it("should make a request to schedule a message", async () => {
-    const spyFetch = jest.spyOn(global, "fetch");
+vi.mock("@/constants");
+
+describe("scheduleMessage", (it) => {
+  it("should make a request to schedule a message", async ({ expect }) => {
+    const spyFetch = vi.spyOn(global, "fetch");
 
     spyFetch.mockResolvedValue({
       json: async () => ({ success: true }),

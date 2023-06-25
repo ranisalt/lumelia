@@ -1,17 +1,34 @@
-import type { Loot } from "@/types";
+import { Loot } from "@/schema";
 import { chunk, map } from "histar";
 
-const parseNumberLine = (line: string) => {
-  const [_, value] = line.split(":");
+const parseDuration = (line: string): number => {
+  const [, value] = line.split(":");
+  const [hours, minutes] = value.substring(0, value.length - 2).split(":");
+  return Number(hours) * 60 + Number(minutes);
+};
+
+const parseNumberLine = (line: string): number => {
+  const [, value] = line.split(":");
   return Number(value.replaceAll(",", "").trim());
 };
 
-export const parseLoot = (text: string): Loot => {
-  const [, _duration, _lootType, loot, supplies, balance, ...lines] = text
+const parseLootType = (line: string): string => {
+  const [, value] = line.split(":");
+  return value.trim();
+};
+
+export const parseLoot = (text: string) => {
+  const [, duration, lootType, loot, supplies, balance, ...lines] = text
     .trim()
     .split("\n");
 
-  return {
+  if (!lootType.trim().startsWith("Loot Type:")) {
+    throw new Error("Invalid input");
+  }
+
+  return new Loot({
+    duration: parseDuration(duration),
+    lootType: parseLootType(lootType),
     loot: parseNumberLine(loot),
     supplies: parseNumberLine(supplies),
     balance: parseNumberLine(balance),
@@ -28,5 +45,5 @@ export const parseLoot = (text: string): Loot => {
         })
       ),
     ],
-  };
+  });
 };

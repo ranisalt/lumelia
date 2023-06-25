@@ -1,17 +1,3 @@
-export type Loot = {
-  loot: number;
-  supplies: number;
-  balance: number;
-  players: {
-    name: string;
-    loot: number;
-    supplies: number;
-    balance: number;
-    damage: number;
-    healing: number;
-  }[];
-};
-
 export type Transaction = {
   from: string;
   to: string;

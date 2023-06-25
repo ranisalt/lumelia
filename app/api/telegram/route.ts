@@ -36,8 +36,8 @@ export const POST = async (req: Request) => {
 
   const { message }: TelegramRequestBody = await req.json();
   const {
-    message_id,
-    chat: { id },
+    message_id: replyToMessageId,
+    chat: { id: chatId },
     entities,
     text,
   } = message;
@@ -62,14 +62,14 @@ export const POST = async (req: Request) => {
     return NextResponse.json({ success: false });
   }
 
+  loot.chat_id = chatId;
+  loot.message_id = replyToMessageId;
   const transactions = splitLoot(loot);
 
   const reply = buildMessage(transactions);
-  await scheduleMessage({
-    chatId: id,
-    text: reply,
-    replyToMessageId: message_id,
-  });
+
+  await loot.save();
+  await scheduleMessage({ chatId, text: reply, replyToMessageId });
 
   return NextResponse.json({ success: true });
 };

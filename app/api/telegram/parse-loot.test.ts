@@ -1,7 +1,8 @@
+import { describe } from "vitest";
 import { parseLoot } from "./parse-loot";
 
-describe("parseLoot", () => {
-  it("should parse loot", () => {
+describe("parseLoot", (it) => {
+  it("should parse loot", ({ expect }) => {
     expect(
       parseLoot(`Session data: From 2023-05-30, 19:45:04 to 2023-05-30, 20:52:15
         Session: 01:07h
@@ -60,7 +61,7 @@ describe("parseLoot", () => {
     });
   });
 
-  it("should throw on invalid input", () => {
+  it("should throw on invalid input", ({ expect }) => {
     expect(() => parseLoot("")).toThrow();
 
     expect(() =>

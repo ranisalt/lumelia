@@ -1,3 +1,4 @@
+export const MONGODB_URI = process.env.MONGODB_URI!;
 export const SERVERLESSQ_API_SECRET_TOKEN =
   process.env.SERVERLESSQ_API_SECRET_TOKEN!;
 export const SERVERLESSQ_API_TOKEN = process.env.SERVERLESSQ_API_TOKEN!;

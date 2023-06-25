@@ -1,8 +1,9 @@
+import { describe } from "vitest";
 import { parseLoot } from "./parse-loot";
 import { splitLoot } from "./split-loot";
 
-describe("splitLoot", () => {
-  it("should split loot evenly", () => {
+describe("splitLoot", (it) => {
+  it("should split loot evenly", ({ expect }) => {
     const input = `Session data: From 2023-06-04, 19:10:01 to 2023-06-04, 20:15:31
       Session: 01:05h
       Loot Type: Leader
@@ -30,7 +31,7 @@ describe("splitLoot", () => {
     ]);
   });
 
-  it("should split loot for more than two players", () => {
+  it("should split loot for more than two players", ({ expect }) => {
     const input = `Session data: From 2023-05-30, 19:45:04 to 2023-05-30, 20:52:15
       Session: 01:07h
       Loot Type: Leader
@@ -65,7 +66,7 @@ describe("splitLoot", () => {
     ]);
   });
 
-  it("should split loot when two players have to transfer", () => {
+  it("should split loot when two players have to transfer", ({ expect }) => {
     const input = `Session data: From 2023-06-04, 12:28:53 to 2023-06-04, 14:36:56
       Session: 02:08h
       Loot Type: Leader
@@ -107,7 +108,7 @@ describe("splitLoot", () => {
     ]);
   });
 
-  it("should split loot with a negative balance", () => {
+  it("should split loot with a negative balance", ({ expect }) => {
     const input = `Session data: From 2023-06-05, 18:17:05 to 2023-06-05, 19:16:01
       Session: 00:58h
       Loot Type: Market
