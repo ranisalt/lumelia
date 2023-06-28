@@ -15,7 +15,7 @@ describe("send-message", (it) => {
       rest.post(
         "https://api.telegram.org/bot110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw/sendMessage",
         async (req, res, ctx) => {
-          expect(await req.json()).toEqual({
+          await expect(req.json()).resolves.toEqual({
             chat_id: 123,
             text: "Hello world",
             reply_to_message_id: 456,
@@ -38,9 +38,9 @@ describe("send-message", (it) => {
     );
 
     const response = await sendMessage({
-      chatId: 123,
+      chat_id: 123,
       text: "Hello world",
-      replyToMessageId: 456,
+      reply_to_message_id: 456,
     });
 
     expect(response).toEqual({
@@ -69,9 +69,9 @@ describe("send-message", (it) => {
 
     await expect(
       sendMessage({
-        chatId: 123,
+        chat_id: 123,
         text: "Hello world",
-        replyToMessageId: 456,
+        reply_to_message_id: 456,
       })
     ).rejects.toThrow("Bad Request: message text is empty");
   });

@@ -1,9 +1,3 @@
-export type Transaction = {
-  from: string;
-  to: string;
-  amount: number;
-};
-
 type TelegramUser = {
   id: number;
   is_bot: boolean;
@@ -53,13 +47,3 @@ export type TelegramMessage = {
   text: string;
   entities?: TelegramMessageEntity[];
 };
-
-export type ScheduledMessage = {
-  chatId: number;
-  text: string;
-  replyToMessageId?: number;
-};
-
-export type TelegramResponse<T> =
-  | { ok: true; result: T }
-  | { ok: false; description: string; error_code: number };

@@ -1,5 +1,4 @@
-import type { Transaction } from "@/types";
-import type { parseLoot } from "./parse-loot";
+import type { parseLoot } from "../telegram/parse-loot";
 
 /**
  * Split loot between players fairly and return a list of transactions.
@@ -19,7 +18,7 @@ export const splitLoot = ({
     balance: balance - balancePerPlayer,
   }));
 
-  const transactions: Transaction[] = [];
+  const transactions: { from: string; to: string; amount: number }[] = [];
 
   state.sort((a, b) => a.balance - b.balance);
   while (state[0].balance < 0) {

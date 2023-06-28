@@ -1,15 +1,19 @@
 import { TELEGRAM_BOT_TOKEN } from "@/constants";
-import type {
-  ScheduledMessage,
-  TelegramMessage,
-  TelegramResponse,
-} from "@/types";
+import type { TelegramMessage } from "@/types";
+
+type TelegramResponse<T> =
+  | { ok: true; result: T }
+  | { ok: false; description: string; error_code: number };
 
 export const sendMessage = async ({
-  chatId,
+  chat_id,
   text,
-  replyToMessageId,
-}: ScheduledMessage): Promise<TelegramMessage> => {
+  reply_to_message_id,
+}: {
+  chat_id: number;
+  text: string;
+  reply_to_message_id: number;
+}): Promise<TelegramMessage> => {
   const url = new URL(
     `/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
     "https://api.telegram.org"
@@ -19,9 +23,9 @@ export const sendMessage = async ({
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
-      chat_id: chatId,
+      chat_id,
       text,
-      reply_to_message_id: replyToMessageId,
+      reply_to_message_id,
       parse_mode: "MarkdownV2",
     }),
   });

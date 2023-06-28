@@ -1,30 +1,14 @@
 import { TELEGRAM_BOT_API_SECRET_TOKEN } from "@/constants";
-import type { TelegramMessage, Transaction } from "@/types";
-import { groupBy } from "histar";
+import { db } from "@/database";
+import type { TelegramMessage } from "@/types";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { parseLoot } from "./parse-loot";
 import { scheduleMessage } from "./schedule-message";
-import { splitLoot } from "./split-loot";
 
 type TelegramRequestBody = {
   update_id: number;
   message: TelegramMessage;
-};
-
-const buildMessage = (transactions: Transaction[]) => {
-  transactions.sort(
-    (a, b) => a.from.localeCompare(b.from) || a.to.localeCompare(b.to)
-  );
-
-  const lines: string[] = [];
-  for (const [name, ts] of groupBy(transactions, (t) => t.from)) {
-    lines.push(`*${name}*`);
-    for (const t of ts) {
-      lines.push(`\\- transfer ${t.amount} to ${t.to}`);
-    }
-  }
-  return lines.join("\n");
 };
 
 export const POST = async (req: Request) => {
@@ -36,13 +20,13 @@ export const POST = async (req: Request) => {
 
   const { message }: TelegramRequestBody = await req.json();
   const {
-    message_id: replyToMessageId,
-    chat: { id: chatId },
+    message_id,
+    chat: { id: chat_id },
     entities,
     text,
   } = message;
 
-  if (!entities || entities.length === 0) {
+  if (!message_id || !entities || entities.length === 0) {
     return NextResponse.json({ success: false });
   }
 
@@ -62,14 +46,12 @@ export const POST = async (req: Request) => {
     return NextResponse.json({ success: false });
   }
 
-  loot.chat_id = chatId;
-  loot.message_id = replyToMessageId;
-  const transactions = splitLoot(loot);
+  loot.chat_id = chat_id;
+  loot.message_id = message_id;
 
-  const reply = buildMessage(transactions);
-
+  await db;
   await loot.save();
-  await scheduleMessage({ chatId, text: reply, replyToMessageId });
+  await scheduleMessage({ chat_id, message_id });
 
   return NextResponse.json({ success: true });
 };

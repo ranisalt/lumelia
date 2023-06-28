@@ -25,22 +25,15 @@ describe("scheduleMessage", (it) => {
           "https://lumelia.vercel.app/api/send-message"
         );
 
-        expect(await req.json()).toEqual({
-          chatId: 123,
-          text: "Hello world",
-          replyToMessageId: 456,
+        await expect(req.json()).resolves.toEqual({
+          chat_id: 123,
+          message_id: 456,
         });
-
         return res(ctx.status(200), ctx.json({ success: true }));
       })
     );
 
-    const response = await scheduleMessage({
-      chatId: 123,
-      text: "Hello world",
-      replyToMessageId: 456,
-    });
-
+    const response = await scheduleMessage({ chat_id: 123, message_id: 456 });
     expect(response).toEqual({ success: true });
   });
 });

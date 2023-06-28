@@ -1,6 +1,5 @@
-import { db } from "@/database";
 import { headers } from "next/headers";
-import { afterAll, describe, vi } from "vitest";
+import { describe, vi } from "vitest";
 import { POST } from "./route";
 import { scheduleMessage } from "./schedule-message";
 
@@ -8,11 +7,6 @@ vi.mock("@/constants");
 vi.mock("@/database");
 vi.mock("next/headers");
 vi.mock("./schedule-message");
-
-afterAll(async () => {
-  await db.connection.dropDatabase();
-  await db.connection.close();
-});
 
 const payload = {
   json: async () => ({
@@ -68,14 +62,11 @@ describe.concurrent("POST /api/telegram", (it) => {
     const response = await POST(payload);
 
     expect(response.status).toEqual(200);
-    expect(await response.json()).toEqual({ success: true });
+    await expect(response.json()).resolves.toEqual({ success: true });
 
     expect(scheduleMessage).toHaveBeenCalledWith({
-      chatId: 123,
-      text: `*Knight Orion*
-\\- transfer 265295 to Mistee Shadowforge
-\\- transfer 394064 to Raagendazss`,
-      replyToMessageId: 123,
+      chat_id: 123,
+      message_id: 123,
     });
   });
 
@@ -117,7 +108,7 @@ describe.concurrent("POST /api/telegram", (it) => {
     } as Request);
 
     expect(response.status).toEqual(200);
-    expect(await response.json()).toEqual({ success: false });
+    await expect(response.json()).resolves.toEqual({ success: false });
 
     expect(scheduleMessage).not.toHaveBeenCalled();
   });

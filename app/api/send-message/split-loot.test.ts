@@ -1,5 +1,5 @@
 import { describe } from "vitest";
-import { parseLoot } from "./parse-loot";
+import { parseLoot } from "../telegram/parse-loot";
 import { splitLoot } from "./split-loot";
 
 describe.concurrent("splitLoot", (it) => {
